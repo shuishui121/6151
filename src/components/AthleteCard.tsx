@@ -47,7 +47,7 @@ export const AthleteCard = memo(function AthleteCard({
   return (
     <div
       onClick={handleClick}
-      className={`relative overflow-hidden rounded-xl bg-slate-800/60 backdrop-blur-sm border p-4 cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-black/40 hover:-translate-y-1 group ${
+      className={`relative overflow-hidden rounded-xl bg-slate-800/80 backdrop-blur-sm border p-4 cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-black/40 hover:-translate-y-1 group ${
         isSelected
           ? 'border-orange-500/60 ring-2 ring-orange-500/30 bg-slate-800/90'
           : 'border-slate-700/50 hover:border-slate-600/80'
@@ -56,8 +56,7 @@ export const AthleteCard = memo(function AthleteCard({
       }`}
       style={{
         animationDelay: `${staggerDelay(delay, 60)}ms`,
-        animation: 'fadeInUp 0.5s ease-out forwards',
-        opacity: 0,
+        animation: athlete.status === 'abnormal' ? undefined : 'fadeInUp 0.5s ease-out forwards',
       }}
     >
       <div
@@ -98,7 +97,7 @@ export const AthleteCard = memo(function AthleteCard({
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between mb-1">
-            <h3 className="text-white font-semibold truncate">{athlete.name}</h3>
+            <h3 className="text-slate-50 font-semibold truncate drop-shadow-sm">{athlete.name}</h3>
             <span
               onClick={handleCompareClick}
               className={`text-xs px-2 py-0.5 rounded-full cursor-pointer transition-colors ${

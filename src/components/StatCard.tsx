@@ -45,11 +45,10 @@ export const StatCard = memo(function StatCard({
 
   return (
     <div
-      className="relative overflow-hidden rounded-2xl bg-slate-800/60 backdrop-blur-sm border border-slate-700/50 p-5 transition-all duration-300 hover:border-slate-600/80 hover:bg-slate-800/80 hover:shadow-lg hover:shadow-black/30 hover:-translate-y-0.5 group"
+      className="relative overflow-hidden rounded-2xl bg-slate-800/80 backdrop-blur-sm border border-slate-700/50 p-5 transition-all duration-300 hover:border-slate-600/80 hover:bg-slate-800/90 hover:shadow-lg hover:shadow-black/30 hover:-translate-y-0.5 group"
       style={{
         animationDelay: `${staggerDelay(delay)}ms`,
         animation: 'fadeInUp 0.6s ease-out forwards',
-        opacity: 0,
       }}
     >
       <div
