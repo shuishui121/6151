@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { AthleteStats } from '@/types';
-import { calculateAthleteStats, getDateRange } from '@/utils/dataUtils';
+import { getDateRange } from '@/utils/dataUtils';
+import { calculateAthleteStatsMemoized } from '@/utils/chartDataUtils';
 import { getRecordsByDateRange } from '@/data/trainingRecords';
 
 export const useAthleteStats = (
@@ -10,7 +11,7 @@ export const useAthleteStats = (
   const stats = useMemo(() => {
     const { startDate, endDate } = getDateRange(timeRangeType);
     const records = getRecordsByDateRange(startDate, endDate, athleteId);
-    return calculateAthleteStats(athleteId, records);
+    return calculateAthleteStatsMemoized(athleteId, records);
   }, [athleteId, timeRangeType]);
 
   return stats;
@@ -26,7 +27,7 @@ export const useAllAthletesStats = (
     
     athleteIds.forEach((id) => {
       const records = getRecordsByDateRange(startDate, endDate, id);
-      result[id] = calculateAthleteStats(id, records);
+      result[id] = calculateAthleteStatsMemoized(id, records);
     });
     
     return result;

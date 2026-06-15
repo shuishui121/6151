@@ -1,6 +1,11 @@
 import { useMemo } from 'react';
 import { TrainingRecord, ChartDataPoint } from '@/types';
-import { aggregateByDate, getDateRange } from '@/utils/dataUtils';
+import { getDateRange } from '@/utils/dataUtils';
+import {
+  aggregateByDateMemoized,
+  downsampleChartDataMemoized,
+  shouldDownsample,
+} from '@/utils/chartDataUtils';
 import { getRecordsByDateRange } from '@/data/trainingRecords';
 
 interface UseTimeRangeDataOptions {
@@ -21,12 +26,25 @@ export const useTimeRangeData = (
   }, [timeRangeType, athleteId]);
 
   const chartData: ChartDataPoint[] = useMemo(() => {
-    return aggregateByDate(records, metrics);
+    return aggregateByDateMemoized(records, metrics);
   }, [records, metrics]);
+
+  const downsampledChartData: ChartDataPoint[] = useMemo(() => {
+    if (shouldDownsample(chartData.length)) {
+      return downsampleChartDataMemoized(
+        chartData,
+        metrics.map((m) => m as string),
+        500,
+        0.25
+      );
+    }
+    return chartData;
+  }, [chartData, metrics]);
 
   return {
     records,
     chartData,
+    downsampledChartData,
     startDate,
     endDate,
     recordCount: records.length,

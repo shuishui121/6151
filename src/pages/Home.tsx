@@ -4,7 +4,11 @@ import { useDashboardStore, useSelectedMetricKeys } from '@/store/useDashboardSt
 import { ATHLETES, getAthleteById } from '@/data/athletes';
 import { useTimeRangeData } from '@/hooks/useTimeRangeData';
 import { useAllAthletesStats } from '@/hooks/useAthleteStats';
-import { calculateTeamStats, getBarRankings, getDateRange } from '@/utils/dataUtils';
+import { calculateTeamStats, getDateRange } from '@/utils/dataUtils';
+import {
+  generateRadarDataMemoized,
+  getBarRankingsMemoized,
+} from '@/utils/chartDataUtils';
 import { StatCard } from '@/components/StatCard';
 import { AthleteCard } from '@/components/AthleteCard';
 import { AthleteDetail } from '@/components/AthleteDetail';
@@ -13,8 +17,6 @@ import { MetricFilter } from '@/components/MetricFilter';
 import { LineChart } from '@/components/charts/LineChart';
 import { BarChart } from '@/components/charts/BarChart';
 import { RadarChart } from '@/components/charts/RadarChart';
-import { generateRadarData } from '@/utils/dataUtils';
-import { METRICS } from '@/data/metrics';
 
 export default function Home() {
   const timeRangeType = useDashboardStore((state) => state.timeRangeType);
@@ -25,7 +27,7 @@ export default function Home() {
   const selectedMetricKeys = useSelectedMetricKeys();
   const lastUpdate = useDashboardStore((state) => state.lastUpdate);
 
-  const { records, chartData } = useTimeRangeData(timeRangeType, {
+  const { records, downsampledChartData } = useTimeRangeData(timeRangeType, {
     metrics: selectedMetricKeys,
   });
 
@@ -40,7 +42,7 @@ export default function Home() {
   }, [records, timeRangeType, lastUpdate]);
 
   const rankings = useMemo(() => {
-    return getBarRankings(records, 10);
+    return getBarRankingsMemoized(records, 10);
   }, [records, lastUpdate]);
 
   const selectedAthlete = useMemo(() => {
@@ -53,7 +55,7 @@ export default function Home() {
       const colors = ['#F97316', '#3B82F6', '#10B981'];
       const athlete = getAthleteById(id);
       return {
-        data: stats ? generateRadarData(stats) : [],
+        data: stats ? generateRadarDataMemoized(stats) : [],
         color: colors[index % colors.length],
         name: athlete?.name || '',
       };
@@ -154,7 +156,7 @@ export default function Home() {
                     </div>
                   </div>
                   <LineChart
-                    data={chartData}
+                    data={downsampledChartData}
                     metrics={selectedMetrics}
                     height={320}
                   />

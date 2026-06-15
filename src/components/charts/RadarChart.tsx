@@ -10,6 +10,7 @@ import {
   Legend,
 } from 'recharts';
 import { RadarDataPoint } from '@/types';
+import { shallowEqual } from '@/utils/chartDataUtils';
 
 interface RadarChartProps {
   data: RadarDataPoint[];
@@ -20,7 +21,7 @@ interface RadarChartProps {
   legendName?: string;
 }
 
-export const RadarChart = memo(function RadarChart({
+function RadarChartInner({
   data,
   color = '#F97316',
   height = 280,
@@ -110,4 +111,6 @@ export const RadarChart = memo(function RadarChart({
       </RechartsRadarChart>
     </ResponsiveContainer>
   );
-});
+}
+
+export const RadarChart = memo(RadarChartInner, shallowEqual);

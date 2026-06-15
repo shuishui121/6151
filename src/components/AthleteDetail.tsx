@@ -1,12 +1,13 @@
 import { memo, useMemo } from 'react';
 import { X, User, Ruler, Scale, Clock, Trophy, Target, Gauge } from 'lucide-react';
-import { Athlete, AthleteStats, TrainingRecord } from '@/types';
+import { Athlete } from '@/types';
 import { useDashboardStore, useSelectedMetricKeys } from '@/store/useDashboardStore';
 import { useAthleteStats } from '@/hooks/useAthleteStats';
 import { useTimeRangeData } from '@/hooks/useTimeRangeData';
 import { RadarChart } from './charts/RadarChart';
 import { AreaChart } from './charts/AreaChart';
-import { generateRadarData, formatDate } from '@/utils/dataUtils';
+import { generateRadarDataMemoized } from '@/utils/chartDataUtils';
+import { formatDate } from '@/utils/dataUtils';
 import { STATUS_COLORS, METRICS, getMetricByKey } from '@/data/metrics';
 import { useAnimatedNumber } from '@/hooks/useAnimatedNumber';
 
@@ -27,7 +28,7 @@ export const AthleteDetail = memo(function AthleteDetail({ athlete }: AthleteDet
   });
 
   const radarData = useMemo(() => {
-    return stats ? generateRadarData(stats) : [];
+    return stats ? generateRadarDataMemoized(stats) : [];
   }, [stats]);
 
   const latestRecord = stats?.latestRecord;

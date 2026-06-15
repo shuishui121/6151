@@ -10,6 +10,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { ChartDataPoint, MetricOption } from '@/types';
+import { formatMetricValue, shallowEqual } from '@/utils/chartDataUtils';
 
 interface AreaChartProps {
   data: ChartDataPoint[];
@@ -20,7 +21,7 @@ interface AreaChartProps {
   showLegend?: boolean;
 }
 
-export const AreaChart = memo(function AreaChart({
+function AreaChartInner({
   data,
   metric,
   height = 250,
@@ -28,18 +29,6 @@ export const AreaChart = memo(function AreaChart({
   showGrid = true,
   showLegend = false,
 }: AreaChartProps) {
-  const formatValue = (value: number): string => {
-    if (metric.key === 'barHeight') {
-      return `${value.toFixed(2)}${metric.unit}`;
-    }
-    if (metric.key === 'approachSpeed') {
-      return `${value.toFixed(2)}${metric.unit}`;
-    }
-    if (metric.key === 'takeoffAngle') {
-      return `${value.toFixed(1)}${metric.unit}`;
-    }
-    return `${Math.round(value)}${metric.unit}`;
-  };
 
   return (
     <ResponsiveContainer width="100%" height={height}>
@@ -87,7 +76,7 @@ export const AreaChart = memo(function AreaChart({
             boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.3)',
           }}
           labelStyle={{ color: '#F1F5F9', fontWeight: 600 }}
-          formatter={(value: number) => [formatValue(value), metric.label]}
+          formatter={(value: number) => [formatMetricValue(value, metric), metric.label]}
         />
         {showLegend && (
           <Legend
@@ -120,4 +109,6 @@ export const AreaChart = memo(function AreaChart({
       </RechartsAreaChart>
     </ResponsiveContainer>
   );
-});
+}
+
+export const AreaChart = memo(AreaChartInner, shallowEqual);

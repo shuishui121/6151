@@ -9,6 +9,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from 'recharts';
+import { shallowEqual } from '@/utils/chartDataUtils';
 
 interface BarChartDataPoint {
   name: string;
@@ -27,7 +28,7 @@ interface BarChartProps {
   layout?: 'vertical' | 'horizontal';
 }
 
-export const BarChart = memo(function BarChart({
+function BarChartInner({
   data,
   height = 300,
   barColor = '#3B82F6',
@@ -104,4 +105,6 @@ export const BarChart = memo(function BarChart({
       </RechartsBarChart>
     </ResponsiveContainer>
   );
-});
+}
+
+export const BarChart = memo(BarChartInner, shallowEqual);

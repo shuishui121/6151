@@ -10,6 +10,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { ChartDataPoint, MetricOption } from '@/types';
+import { formatMetricValue, shallowEqual } from '@/utils/chartDataUtils';
 
 interface LineChartProps {
   data: ChartDataPoint[];
@@ -20,7 +21,7 @@ interface LineChartProps {
   showLegend?: boolean;
 }
 
-export const LineChart = memo(function LineChart({
+function LineChartInner({
   data,
   metrics,
   height = 300,
@@ -28,18 +29,6 @@ export const LineChart = memo(function LineChart({
   showGrid = true,
   showLegend = true,
 }: LineChartProps) {
-  const formatValue = (value: number, metric: MetricOption): string => {
-    if (metric.key === 'barHeight') {
-      return `${value.toFixed(2)}${metric.unit}`;
-    }
-    if (metric.key === 'approachSpeed') {
-      return `${value.toFixed(2)}${metric.unit}`;
-    }
-    if (metric.key === 'takeoffAngle') {
-      return `${value.toFixed(1)}${metric.unit}`;
-    }
-    return `${Math.round(value)}${metric.unit}`;
-  };
 
   return (
     <ResponsiveContainer width="100%" height={height}>
@@ -92,7 +81,7 @@ export const LineChart = memo(function LineChart({
           formatter={(value: number, name: string) => {
             const metric = metrics.find((m) => m.key === name);
             return metric
-              ? [formatValue(value, metric), metric.label]
+              ? [formatMetricValue(value, metric), metric.label]
               : [value, name];
           }}
         />
@@ -136,4 +125,6 @@ export const LineChart = memo(function LineChart({
       </RechartsLineChart>
     </ResponsiveContainer>
   );
-});
+}
+
+export const LineChart = memo(LineChartInner, shallowEqual);
